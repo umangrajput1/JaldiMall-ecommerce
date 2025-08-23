@@ -50,6 +50,6 @@ This repository contains the foundational backend setup for a full-stack e-comme
 
 **Created by:** Umang Kumar  
 **Location:** Noida, Uttar Pradesh, India  
-**LinkedIn:** [Add your profile link here]  
-**Email:** [Add your email here]
+**LinkedIn:** https://www.linkedin.com/in/umangkumar01/  
+**Email:** umangkumar7800@gmail.com
 
