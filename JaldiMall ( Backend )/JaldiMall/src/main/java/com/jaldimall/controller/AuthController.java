@@ -2,7 +2,9 @@ package com.jaldimall.controller;
 
 import com.jaldimall.domain.USER_ROLE;
 import com.jaldimall.model.User;
+import com.jaldimall.model.VerificationCode;
 import com.jaldimall.repository.UserRepository;
+import com.jaldimall.response.ApiResponse;
 import com.jaldimall.response.AuthResponse;
 import com.jaldimall.response.SignupRequest;
 import com.jaldimall.service.AuthService;
@@ -22,7 +24,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest request){
+    public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest request) throws Exception {
 
         String jwt=authService.createUser(request);
 
@@ -31,6 +33,19 @@ public class AuthController {
         res.setMessage("register success");
         res.setRole(USER_ROLE.ROLE_CUSTOMER);
 
+
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/sent/login-sign-otp")
+    public ResponseEntity<ApiResponse> sentOtpHandler(
+            @RequestBody VerificationCode verificationCode) throws Exception {
+
+        authService.sentLoginOtp(verificationCode.getEmail());
+
+        ApiResponse res=new ApiResponse();
+
+        res.setMassage("otp sent successfully");
 
         return ResponseEntity.ok(res);
     }
