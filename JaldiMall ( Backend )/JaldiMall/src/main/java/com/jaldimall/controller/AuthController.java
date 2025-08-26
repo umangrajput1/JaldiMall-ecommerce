@@ -4,6 +4,7 @@ import com.jaldimall.domain.USER_ROLE;
 import com.jaldimall.model.User;
 import com.jaldimall.model.VerificationCode;
 import com.jaldimall.repository.UserRepository;
+import com.jaldimall.request.LoginRequest;
 import com.jaldimall.response.ApiResponse;
 import com.jaldimall.response.AuthResponse;
 import com.jaldimall.response.SignupRequest;
@@ -49,4 +50,15 @@ public class AuthController {
 
         return ResponseEntity.ok(res);
     }
+
+    @PostMapping("/signing")
+    public ResponseEntity<AuthResponse> loginHandler(
+            @RequestBody LoginRequest request) throws Exception {
+
+        AuthResponse authResponse = authService.signing(request);
+
+
+        return ResponseEntity.ok(authResponse);
+    }
+
 }

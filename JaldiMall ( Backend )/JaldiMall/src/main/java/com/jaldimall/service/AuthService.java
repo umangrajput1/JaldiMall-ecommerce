@@ -1,5 +1,7 @@
 package com.jaldimall.service;
 
+import com.jaldimall.request.LoginRequest;
+import com.jaldimall.response.AuthResponse;
 import com.jaldimall.response.SignupRequest;
 
 public interface AuthService {
@@ -8,4 +10,5 @@ public interface AuthService {
 
     String createUser(SignupRequest req) throws Exception;
 
+    AuthResponse signing(LoginRequest req);
 }
