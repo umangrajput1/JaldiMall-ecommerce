@@ -3,9 +3,11 @@ package com.jaldimall.service.impl;
 import com.jaldimall.config.JwtProvider;
 import com.jaldimall.domain.USER_ROLE;
 import com.jaldimall.model.Cart;
+import com.jaldimall.model.Seller;
 import com.jaldimall.model.User;
 import com.jaldimall.model.VerificationCode;
 import com.jaldimall.repository.CartRepository;
+import com.jaldimall.repository.SellerRepository;
 import com.jaldimall.repository.UserRepository;
 import com.jaldimall.repository.VerificationCodeRepository;
 import com.jaldimall.request.LoginRequest;
@@ -40,18 +42,31 @@ public class AuthServiceImpl implements AuthService {
     private final VerificationCodeRepository verificationCodeRepository;
     private final EmailService emailService;
     private final CustomUserServiceImpl customUserService;
+    private final SellerRepository sellerRepository;
 
     @Override
-    public void sentLoginOtp(String email) throws Exception {
+    public void sentLoginOtp(String email, USER_ROLE role) throws Exception {
         String SIGNING_PREFIX="signing_";
+//        String SELLER_PREFIX = "seller_";
 
         if (email.startsWith(SIGNING_PREFIX)){
             email=email.substring(SIGNING_PREFIX.length());
 
-            User user = userRepository.findByEmail(email);
-            if(user == null){
-                throw new Exception("user not exist with provide email");
+            if (role.equals(USER_ROLE.ROLE_SELLER)){
+                Seller seller = sellerRepository.findByEmail(email);
+                if (seller == null) {
+                    throw new Exception("seller not found ");
+                }
+
             }
+            else {
+                User user = userRepository.findByEmail(email);
+                if(user == null){
+                    throw new Exception("user not exist with provide email");
+                }
+            }
+
+
         }
 
         VerificationCode isExist = verificationCodeRepository.findByEmail(email);

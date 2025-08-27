@@ -4,6 +4,7 @@ import com.jaldimall.domain.USER_ROLE;
 import com.jaldimall.model.User;
 import com.jaldimall.model.VerificationCode;
 import com.jaldimall.repository.UserRepository;
+import com.jaldimall.request.LoginOtpRequest;
 import com.jaldimall.request.LoginRequest;
 import com.jaldimall.response.ApiResponse;
 import com.jaldimall.response.AuthResponse;
@@ -40,9 +41,9 @@ public class AuthController {
 
     @PostMapping("/sent/login-sign-otp")
     public ResponseEntity<ApiResponse> sentOtpHandler(
-            @RequestBody VerificationCode verificationCode) throws Exception {
+            @RequestBody LoginOtpRequest request) throws Exception {
 
-        authService.sentLoginOtp(verificationCode.getEmail());
+        authService.sentLoginOtp(request.getEmail(), request.getRole());
 
         ApiResponse res=new ApiResponse();
 
