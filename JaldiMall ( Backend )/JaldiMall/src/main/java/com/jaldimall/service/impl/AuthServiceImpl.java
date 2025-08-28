@@ -54,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
 
             if (role.equals(USER_ROLE.ROLE_SELLER)){
                 Seller seller = sellerRepository.findByEmail(email);
+                System.out.println(sellerRepository.findByEmail(email));
                 if (seller == null) {
                     throw new Exception("seller not found ");
                 }
@@ -132,6 +133,7 @@ public class AuthServiceImpl implements AuthService {
         String username = req.getEmail();
         String otp = req.getOtp();
 
+
         Authentication authentication = authentication(username, otp);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
@@ -147,12 +149,12 @@ public class AuthServiceImpl implements AuthService {
 
     private Authentication authentication(String username, String otp) {
         UserDetails userDetails = customUserService.loadUserByUsername(username);
+
         if (userDetails ==null){
             throw new BadCredentialsException("Invalid username");
         }
 
-        VerificationCode verificationCode=verificationCodeRepository.findByEmail(username);
-
+        VerificationCode verificationCode=verificationCodeRepository.findByEmail(userDetails.getUsername());
         if (verificationCode == null || !verificationCode.getOtp().equals(otp)){
             throw new BadCredentialsException("wrong otp");
         }

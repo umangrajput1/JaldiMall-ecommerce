@@ -3,6 +3,7 @@ package com.jaldimall.service.impl;
 import com.jaldimall.config.JwtProvider;
 import com.jaldimall.domain.AccountStatus;
 import com.jaldimall.domain.USER_ROLE;
+import com.jaldimall.exception.SellerException;
 import com.jaldimall.model.Address;
 import com.jaldimall.model.Seller;
 import com.jaldimall.repository.AddressRepository;
@@ -52,10 +53,10 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller getSellerById(long id) throws Exception {
+    public Seller getSellerById(long id) throws SellerException {
 
         return sellerRepository.findById(id).orElseThrow(
-                ()->new Exception("seller not found with id "+ id));
+                ()->new SellerException("seller not found with id "+ id));
     }
 
     @Override
@@ -75,6 +76,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public Seller updateSeller(long id, Seller seller) throws Exception {
+
         Seller existingSeller  = this.getSellerById(id);
 
         if (seller.getSellerName() !=null){
@@ -125,10 +127,9 @@ public class SellerServiceImpl implements SellerService {
 
              }
 
-             return sellerRepository.save(existingSeller);
         }
 
-        return null;
+        return sellerRepository.save(existingSeller);
     }
 
     @Override

@@ -85,7 +85,7 @@ public class SellerController {
         return new ResponseEntity<>(seller, HttpStatus.OK);
     }
 
-    @GetMapping("/profile")
+    @GetMapping
     public ResponseEntity<Seller> getSellerByJwt(
             @RequestHeader("Authorization") String jwt) throws Exception {
         Seller seller = sellerService.getSellerProfile(jwt);
@@ -93,18 +93,20 @@ public class SellerController {
 
     }
 
-    @GetMapping
+    @GetMapping("all-seller")
     private ResponseEntity<List<Seller>> getALlSellers(
             @RequestParam(required = false)AccountStatus status){
         List<Seller> sellers = sellerService.getAllSellers(status);
         return ResponseEntity.ok(sellers);
     }
 
-    @PatchMapping()
+    @PatchMapping
     public ResponseEntity<Seller> updateSeller(
             @RequestHeader("Authorization") String jwt, @RequestBody Seller seller) throws Exception {
+
         Seller profile = sellerService.getSellerProfile(jwt);
         Seller updatedSeller  = sellerService.updateSeller(profile.getId(), seller);
+
         return ResponseEntity.ok(updatedSeller);
     }
 
