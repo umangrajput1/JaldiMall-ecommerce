@@ -5,17 +5,18 @@ import com.jaldimall.model.Product;
 import com.jaldimall.model.Seller;
 import com.jaldimall.request.CreateProductRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
-import javax.sound.sampled.Port;
 import java.util.List;
 
+@Service
 public interface ProductService {
 
-    public Product createProduct(CreateProductRequest req, Seller seller);
-    public void deleteProduct(Long prodId) throws ProductException;
-    public Product updateProduct(Long prodId, Product product) throws ProductException;
+    Product createProduct(CreateProductRequest req, Seller seller);
+    void deleteProduct(Long prodId) throws ProductException;
+    Product updateProduct(Long prodId, Product product) throws ProductException;
     Product findProductById(Long prodId) throws ProductException;
-    List<Product> searchProducts();
+    List<Product> searchProducts(String query);
     public Page<Product> getAllProducts(
             String category,
             String brand,
@@ -23,7 +24,7 @@ public interface ProductService {
             String sizes,
             Integer minPrice,
             Integer maxPrice,
-            String minDiscount,
+            Integer minDiscount,
             String sort,
             String stock,
             Integer pageNumber

@@ -57,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
             category.setCategoryId(req.getCategory3());
             category.setLevel(3);
             category.setParentCategory(category2);
-            category = categoryRepository.save(category);
+            categoryRepository.save(category);
         }
 
         int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
@@ -95,13 +95,40 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    @Override
-    public Product updateProduct(Long prodId, Product product) throws ProductException {
-        Product product1 = findProductById(prodId);
-        product.setId(prodId);
+    public Product updateProduct(Long prodId, Product updatedProduct) throws ProductException {
+        Product existingProduct = findProductById(prodId);
 
-        return productRepository.save(product);
+        if (updatedProduct.getTitle() != null) {
+            existingProduct.setTitle(updatedProduct.getTitle());
+        }
+        if (updatedProduct.getDescription() != null) {
+            existingProduct.setDescription(updatedProduct.getDescription());
+        }
+        if (updatedProduct.getMrpPrice() != 0) {
+            existingProduct.setMrpPrice(updatedProduct.getMrpPrice());
+        }
+        if (updatedProduct.getSellingPrice() != 0) {
+            existingProduct.setSellingPrice(updatedProduct.getSellingPrice());
+        }
+        if (updatedProduct.getQuantity() != 0) {
+            existingProduct.setQuantity(updatedProduct.getQuantity());
+        }
+        if (updatedProduct.getColor() != null) {
+            existingProduct.setColor(updatedProduct.getColor());
+        }
+        if (updatedProduct.getImages() != null && !updatedProduct.getImages().isEmpty()) {
+            existingProduct.setImages(updatedProduct.getImages());
+        }
+        if (updatedProduct.getSizes() != null) {
+            existingProduct.setSizes(updatedProduct.getSizes());
+        }
+        if (updatedProduct.getCategory() != null) {
+            existingProduct.setCategory(updatedProduct.getCategory());
+        }
+
+        return productRepository.save(existingProduct);
     }
+
 
     @Override
     public Product findProductById(Long prodId) throws ProductException {
@@ -113,52 +140,52 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> searchProducts() {
-        return List.of();
+    public List<Product> searchProducts(String query) {
+        return productRepository.searchProduct(query);
     }
 
     @Override
     public Page<Product> getAllProducts(String category,
                                         String brand, String colors, String sizes,
                                         Integer minPrice, Integer maxPrice,
-                                        String minDiscount, String sort,
+                                        Integer minDiscount, String sort,
                                         String stock, Integer pageNumber) {
 
-        Specification<Product> specification = (root, query, cb) -> {
+        Specification<Product> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (category != null && !category.isEmpty()) {
+            if (category != null ) {
                 Join<Product, Category> categoryJoin = root.join("category");
-                predicates.add(cb.equal(categoryJoin.get("categoryId"), Long.valueOf(category)));
+                predicates.add(criteriaBuilder.equal(categoryJoin.get("categoryId"),category));
             }
 
             if (colors != null && !colors.isEmpty()) {
-                predicates.add(cb.like(root.get("colors"), "%" + colors + "%"));
+                predicates.add(criteriaBuilder.equal(root.get("color"), colors));
             }
 
             if (sizes != null && !sizes.isEmpty()) {
-                predicates.add(cb.like(root.get("sizes"), "%" + sizes + "%"));
+                predicates.add(criteriaBuilder.equal(root.get("size"),sizes));
             }
 
             if (minPrice != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("sellingPrice"), minPrice));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("sellingPrice"), minPrice));
             }
 
             if (maxPrice != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("sellingPrice"), maxPrice));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("sellingPrice"), maxPrice));
             }
 
-            if (minDiscount != null && !minDiscount.isEmpty()) {
-                predicates.add(cb.greaterThanOrEqualTo(
-                        root.get("discountPercentage"), Integer.parseInt(minDiscount)
-                ));
+            if (minDiscount != null ) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+                        root.get("discountPercentage"),minDiscount)
+                );
             }
 
-            if (stock != null && !stock.isEmpty()) {
-                predicates.add(cb.equal(root.get("stock"), Integer.valueOf(stock)));
+            if (stock != null ) {
+                predicates.add(criteriaBuilder.equal(root.get("stock"), stock));
             }
 
-            return cb.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
 
         Pageable pageable;
@@ -176,13 +203,12 @@ public class ProductServiceImpl implements ProductService {
             pageable = PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize, Sort.unsorted());
         }
 
-//        return productRepository.findAll(specification, pageable);
-        return null;
+        return productRepository.findAll(specification, pageable);
     }
 
 
     @Override
     public List<Product> getProductBySellerId(Long sellerId) {
-        return List.of();
+        return productRepository.findBySeller_Id(sellerId);
     }
 }

@@ -3,9 +3,11 @@ package com.jaldimall.service;
 import com.jaldimall.domain.AccountStatus;
 import com.jaldimall.exception.SellerException;
 import com.jaldimall.model.Seller;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface SellerService {
 
     Seller getSellerProfile(String jwt) throws Exception;
