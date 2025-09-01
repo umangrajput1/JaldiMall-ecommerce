@@ -3,12 +3,14 @@ package com.jaldimall.controller;
 import com.jaldimall.config.JwtProvider;
 import com.jaldimall.domain.AccountStatus;
 import com.jaldimall.model.Seller;
+import com.jaldimall.model.SellerReport;
 import com.jaldimall.model.VerificationCode;
 import com.jaldimall.repository.VerificationCodeRepository;
 import com.jaldimall.request.LoginRequest;
 import com.jaldimall.response.AuthResponse;
 import com.jaldimall.service.AuthService;
 import com.jaldimall.service.EmailService;
+import com.jaldimall.service.SellerReportService;
 import com.jaldimall.service.SellerService;
 import com.jaldimall.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ public class SellerController {
     private final VerificationCodeRepository verificationCodeRepository;
     private final AuthService authService;
     private final EmailService emailService;
-    private final JwtProvider jwtProvider;
+    private final SellerReportService sellerReportService;
 
 
     @PostMapping("/login")
@@ -93,6 +95,16 @@ public class SellerController {
 
     }
 
+    @GetMapping("/report")
+    public ResponseEntity<SellerReport> getSellerReport(
+            @RequestHeader("Authorization") String jwt) throws Exception {
+
+        Seller seller = sellerService.getSellerProfile(jwt);
+        SellerReport report = sellerReportService.getSellerReport(seller);
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
+
+
     @GetMapping("all-seller")
     private ResponseEntity<List<Seller>> getALlSellers(
             @RequestParam(required = false)AccountStatus status){
@@ -115,6 +127,8 @@ public class SellerController {
         sellerService.deleteSeller(id);
         return ResponseEntity.noContent().build();
     }
+
+
 
 
 }

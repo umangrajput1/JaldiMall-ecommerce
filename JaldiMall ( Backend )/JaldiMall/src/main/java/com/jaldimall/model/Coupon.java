@@ -23,6 +23,8 @@ public class Coupon {
 
     private double discountPercentage;
 
+    private double minimumOrderValue;
+
     private LocalDate validityStartDate;
 
     private LocalDate validityEndDate;

@@ -13,9 +13,9 @@ public class Deal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
-    private String discount;
+    private Integer discount;
 
     @OneToOne
     private HomeCategory category;

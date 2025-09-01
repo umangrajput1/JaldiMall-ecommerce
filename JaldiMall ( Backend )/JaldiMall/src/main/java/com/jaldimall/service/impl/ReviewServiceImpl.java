@@ -36,13 +36,26 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Long reviewId, String reviewText, double rating, Long userId) {
-        return null;
+    public Review updateReview(Long reviewId, String reviewText, double rating, Long userId) throws Exception {
+        Review review = getReviewById(reviewId);
+
+        if (review.getUser().getId().equals(userId)){
+            review.setReviewText(reviewText);
+            review.setRating(rating);
+
+            return reviewRepository.save(review);
+        }else {
+            throw new Exception("you can't update this review");
+        }
     }
 
     @Override
-    public void deleteReview(Long reviewId, Long userId) {
-
+    public void deleteReview(Long reviewId, Long userId) throws Exception {
+        Review review = getReviewById(reviewId);
+        if (review.getUser().getId().equals(userId)){
+            throw  new Exception("you can't delete this review");
+        }
+        reviewRepository.delete(review);
     }
 
     @Override
