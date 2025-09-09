@@ -1,10 +1,10 @@
 import React from 'react';
-import { Button } from "@mui/material";
+import CustNavbar from './customer/component/navbar/CustNavbar';
+
 function App() {
   return (
     <>
-      <h1 className='text-3xl font-bold underline'>Hello jaldiMall website</h1>
-      <Button variant="contained">Contained</Button>
+      <CustNavbar />
     </>
   );
 }
